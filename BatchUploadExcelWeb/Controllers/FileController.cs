@@ -9,7 +9,7 @@ using System.Web;
 using System.Web.Mvc;
 
 
-namespace BatchUploadExcel.Controllers
+namespace BatchUploadExcelWeb.Controllers
 {
     public class FileController : Controller
     {

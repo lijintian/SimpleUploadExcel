@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using System.Web.Optimization;
 
-namespace BatchUploadExcel
+namespace BatchUploadExcelWeb
 {
     public class BundleConfig
     {
