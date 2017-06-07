@@ -1,0 +1,6 @@
+﻿@using SimpleUploadExcelHelper
+@{
+    Layout = null;
+}
+
+@{Html.RenderAction("Upload", "File", new { TemplateFileName = "TestDatasourceModelRequire-Template.xlsx", EntityClassName = "TestDataSourceModel" });}
