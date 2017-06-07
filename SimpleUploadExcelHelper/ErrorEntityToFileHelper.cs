@@ -49,11 +49,7 @@ namespace SimpleUploadExcelHelper
 
             #endregion
 
-            var saveErroRoot = ConfigurationManager.AppSettings[ErrorFileRootConfig];
-            if (saveErroRoot == null)
-            {
-                throw new Exception("没有配置导入错误文件保存路径");
-            }
+            var saveErroRoot = ConfigHelper.GetConfig(ErrorFileRootConfig);
 
             var filePath =  Path.Combine(saveErroRoot.ToString(), importType.Name);
             var fileName = DateTime.Now.ToString("yyyyMMddHHmmss")+ "导入错误文件.xlsx";
@@ -94,11 +90,7 @@ namespace SimpleUploadExcelHelper
 
             #endregion
 
-            var saveErroRoot = ConfigurationManager.AppSettings[ErrorFileRootConfig];
-            if (saveErroRoot == null)
-            {
-                throw new Exception("没有配置导入错误文件保存路径");
-            }
+            var saveErroRoot = ConfigHelper.GetConfig(ErrorFileRootConfig);
 
             var filePath = Path.Combine(saveErroRoot.ToString(), importType.Name);
             var fileName = DateTime.Now.ToString("yyyyMMddHHmmss") + "导入错误文件.xlsx";
@@ -112,28 +104,17 @@ namespace SimpleUploadExcelHelper
 
         public static string GetFilePathAndName<T>(string fileName)
         {
+            var importType = typeof(T);        
 
-            var importType = typeof(T);
-        
-
-            var saveErroRoot = ConfigurationManager.AppSettings[ErrorFileRootConfig];
-            if (saveErroRoot == null)
-            {
-                throw new Exception("没有配置导入错误文件保存路径");
-            }
+            var saveErroRoot = ConfigHelper.GetConfig(ErrorFileRootConfig);
 
             var filePath = Path.Combine(saveErroRoot.ToString(), importType.Name);
             return Path.Combine(filePath, fileName);
         }
 
-
         public static string GetFilePathAndName(Type importType,string fileName)
         {
-            var saveErroRoot = ConfigurationManager.AppSettings[ErrorFileRootConfig];
-            if (saveErroRoot == null)
-            {
-                throw new Exception("没有配置导入错误文件保存路径");
-            }
+            var saveErroRoot = ConfigHelper.GetConfig(ErrorFileRootConfig);
 
             var filePath = Path.Combine(saveErroRoot.ToString(), importType.Name);
             return Path.Combine(filePath, fileName);

@@ -1,4 +1,5 @@
 ﻿using SimpleUploadExcelHelper;
+using SimpleUploadExcelHelper.Common;
 using SimpleUploadExcelHelper.Entities;
 using System;
 using System.Collections.Generic;
@@ -66,67 +67,31 @@ namespace SimpleUploadExcelWeb.Controllers
             #endregion
 
             #region 只知道类型名，调用组件实现导入
-            var entityAssemblyConfig = System.Configuration.ConfigurationManager.AppSettings["SimpleImportExcel:EntityAssemblyName"];
 
-            if (entityAssemblyConfig == null)
-            {
-                throw new Exception("没有配置SimpleImportExcel:EntityAssemblyName");
-            }
-
-            var uploadHelperAssembly = System.Reflection.Assembly.Load(entityAssemblyConfig.ToString());
-
-            var entityAssemblyNameSpaceConfig = System.Configuration.ConfigurationManager.AppSettings["SimpleImportExcel:EntityNameSpace"];
-            if (entityAssemblyNameSpaceConfig == null)
-            {
-                throw new Exception("没有配置SimpleImportExcel:EntityNameSpace");
-            }
-            var entityType =uploadHelperAssembly.GetType(entityAssemblyNameSpaceConfig.ToString() +"."+ EntityClassName);
-
-            var fileName = DateTime.Now.ToString("yyyMMddHHmmss") + SubmitFile.FileName;
-
-            var uploadFileRootConfig = System.Configuration.ConfigurationManager.AppSettings["SimpleImportExcel:UploadFileRoot"];
-
-            if (uploadFileRootConfig == null)
-            {
-                throw new Exception("没有配置SimpleImportExcel:UploadFileRoot");
-            }
-
-            var filePath = Path.Combine(uploadFileRootConfig.ToString(), EntityClassName);
-
-            if (!Directory.Exists(filePath))
-            {
-                Directory.CreateDirectory(filePath);
-            }
-
-            var saveFilePathAndName = Path.Combine(filePath, fileName);
-
-            SubmitFile.SaveAs(saveFilePathAndName);
+            #region 通过组件保存文件
+            var fileName = SubmitFile.FileName;
+            var fileContent = new byte[SubmitFile.ContentLength];
+            SubmitFile.InputStream.Read(fileContent, 0, SubmitFile.ContentLength);
+            var submitExcelInfo = new ExcelFileInfo(fileName, EntityClassName, fileContent);
+            var saveExcelHelper = new SaveExcelHelper(submitExcelInfo);
+            var saveFileInfo = saveExcelHelper.SaveFile();
+            #endregion
 
             #region 通过组件获取实体
-
-            var fileInfo = new ExcelFileInfo(filePath, fileName);
-
             var errorEntities = new List<EntityBase>();
-
-            var stopWatch = new Stopwatch();
-            stopWatch.Start();
-            var validEntities = ExcelToEntityHelper.GetEntities(entityType, fileInfo, out errorEntities);
-            stopWatch.Stop();
+            var validEntities = ExcelToEntityHelper.GetEntities(saveFileInfo.EntityType, saveFileInfo, out errorEntities);
             #endregion
-             
-             #region 通过组件持久化实体
-             var stopWatch1 = new Stopwatch();
-             stopWatch1.Start();
-             EntityToDBHelper.ImportEntitiesWidthBulkCopy(entityType, validEntities);
-             stopWatch1.Stop();
-             #endregion
 
-             #region 通过组件生成导入错误文件
-             var errorFileInfo = ErrorEntityToFileHelper.GetFile(entityType,errorEntities);
-             #endregion
+            #region 通过组件持久化实体
+            EntityToDBHelper.ImportEntitiesWidthBulkCopy(saveFileInfo.EntityType, validEntities);
+            #endregion
 
-             return View("UploadResult", errorFileInfo);
-             #endregion
+            #region 通过组件生成导入错误文件
+            var errorFileInfo = ErrorEntityToFileHelper.GetFile(saveFileInfo.EntityType, errorEntities);
+            #endregion
+
+            return View("UploadResult", errorFileInfo);
+            #endregion
         }
 
 
@@ -138,23 +103,8 @@ namespace SimpleUploadExcelWeb.Controllers
 
     
         public ActionResult ImportError(string EntityClassName,string FileName)
-        {
-            var entityAssemblyConfig = System.Configuration.ConfigurationManager.AppSettings["SimpleImportExcel:EntityAssemblyName"];
-
-            if (entityAssemblyConfig == null)
-            {
-                throw new Exception("没有配置SimpleImportExcel:EntityAssemblyName");
-            }
-
-            var uploadHelperAssembly = System.Reflection.Assembly.Load(entityAssemblyConfig.ToString());
-
-            var entityAssemblyNameSpaceConfig = System.Configuration.ConfigurationManager.AppSettings["SimpleImportExcel:EntityNameSpace"];
-            if (entityAssemblyNameSpaceConfig == null)
-            {
-                throw new Exception("没有配置SimpleImportExcel:EntityNameSpace");
-            }
-            var entityType = uploadHelperAssembly.GetType(entityAssemblyNameSpaceConfig.ToString() + "." + EntityClassName);
-
+        {           
+            var entityType = TypeHelper.GetType(EntityClassName);
             return this.File(ErrorEntityToFileHelper.GetFilePathAndName(entityType,FileName), "application/ms-excel", FileName);
         }
     }

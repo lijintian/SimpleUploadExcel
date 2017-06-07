@@ -92,12 +92,8 @@ namespace SimpleUploadExcelHelper
 
             var effectRows = 0;
 
-            var imprtDB = System.Configuration.ConfigurationManager.AppSettings[DbConfig];
-            if (imprtDB == null)
-            {
-                throw new Exception("批量导入组件没有配置要导入的数据库连接字符串名称，请在Appsetting配置节点SimpleImportExcel:RepositoryDBConnStr");
-            }
-
+            var imprtDB =  ConfigHelper.GetConfig("DbConfig");
+           
             var connStr = System.Configuration.ConfigurationManager.ConnectionStrings[imprtDB.ToString()];
 
             if (connStr == null)
@@ -263,11 +259,8 @@ namespace SimpleUploadExcelHelper
         #region Private
         private static void BatchInsert(DataTable dt)
         {
-            var imprtDB = System.Configuration.ConfigurationManager.AppSettings[DbConfig];
-            if (imprtDB == null)
-            {
-                throw new Exception("批量导入组件没有配置要导入的数据库连接字符串名称，请在Appsetting配置节点SimpleImportExcel:RepositoryDBConnStr");
-            }
+         
+            var imprtDB = ConfigHelper.GetConfig(DbConfig);
 
             var connStr = System.Configuration.ConfigurationManager.ConnectionStrings[imprtDB.ToString()];
 

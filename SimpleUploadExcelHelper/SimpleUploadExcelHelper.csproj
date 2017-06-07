@@ -66,9 +66,11 @@
     <Compile Include="Attribute\DBTableAttribute.cs" />
     <Compile Include="Attribute\DBTableColumnAttribute.cs" />
     <Compile Include="Attribute\ExcelColumnAttribute.cs" />
-    <Compile Include="Common\BaseDataSource.cs" />
-    <Compile Include="Common\ExcelFieldValidType.cs" />
+    <Compile Include="Attribute\BaseDataSource.cs" />
+    <Compile Include="Attribute\ExcelFieldValidType.cs" />
     <Compile Include="Common\JsonHelper.cs" />
+    <Compile Include="Common\ConfigHelper.cs" />
+    <Compile Include="Common\TypeHelper.cs" />
     <Compile Include="Entities\EntityBase.cs" />
     <Compile Include="ErrorEntityToFileHelper.cs" />
     <Compile Include="EntityToDBHelper.cs" />
@@ -76,6 +78,7 @@
     <Compile Include="Common\ExcelFileInfo.cs" />
     <Compile Include="Common\NPOIExcelHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SaveExcelHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

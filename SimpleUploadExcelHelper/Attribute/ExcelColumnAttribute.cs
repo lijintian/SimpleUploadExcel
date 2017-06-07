@@ -70,6 +70,7 @@ namespace SimpleUploadExcelHelper
                     }
                     break;
                 case ExcelFieldValidType.City:
+                    //todo:DataSource需要重构，给用户接口允许用户自定义
                     this.DataSource = BaseDataSource.CreateInstance().City;
                     this.ValidType = ExcelFieldValidType.DataSource;
                     break;

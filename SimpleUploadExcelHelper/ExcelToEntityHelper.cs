@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using SimpleUploadExcelHelper.Common;
 using SimpleUploadExcelHelper.Entities;
+using System.IO;
 
 namespace SimpleUploadExcelHelper
 {
