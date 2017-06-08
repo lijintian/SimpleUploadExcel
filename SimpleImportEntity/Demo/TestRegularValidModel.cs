@@ -12,16 +12,16 @@ namespace SimpleImportEntity
     
     public class TestRegularValidModel : EntityBase
     {
-        [ExcelColumn("Field1",true, @"^[0-9]+$", "只能输入数字")]
+        [ExcelColumn("Field1")]
         public string Field1 { get; set; }
 
-        [ExcelColumn("Field2", true, @"^[a-zA-Zs]+$", "只能输入字母")]
+        [ExcelColumn("Field2")]
         public string Field2 { get; set; }
 
-        [ExcelColumn("Field3", true, ExcelFieldValidType.Number)]
+        [ExcelColumn("Field3")]
         public string Field3 { get; set; }
 
-        [ExcelColumn("Field4", true, ExcelFieldValidType.Letter)]
+        [ExcelColumn("Field4")]
         public string Field4 { get; set; }
 
 

@@ -59,75 +59,11 @@ namespace SimpleUploadExcelHelper
                             isCellValid = true;
                             var cellVal = dtRow[excelColumnAttribute.ColumnName].ToString();
 
-                            #region 是否必填
-                            if (excelColumnAttribute.IsRequire)
-                            {
-                                if (string.IsNullOrEmpty(cellVal))
-                                {
-                                    concreteObject.AppendError("请输入"+excelColumnAttribute.ColumnName);
-                                    continue;
-                                }
-                            }
-                            #endregion
-
-                            #region 格式校验
-                            switch (excelColumnAttribute.ValidType)
-                            {
-                                case Common.ExcelFieldValidType.Regular:
-                                    #region 正则校验
-                                    if (excelColumnAttribute.ValidRegular.IsMatch(dtRow[excelColumnAttribute.ColumnName].ToString()))
-                                    {
-                                        propertySetMethod.Invoke(concreteObject, new object[] { Convert.ChangeType(dtRow[excelColumnAttribute.ColumnName], property.PropertyType) });
-                                        isCellValid = true;
-                                    }
-                                    else
-                                    {
-                                        isCellValid = false;
-                                    }
-                                    #endregion
-                                    break;
-                                case Common.ExcelFieldValidType.DataSource:
-                                    //todo:各种类型的数据源校验
-                                    #region 数据源校验 
-
-                                    #region 将json数据源反序列化为实体，反序列化过的数据源不再反序列化
-                                    if (allDataSource.ContainsKey(excelColumnAttribute.ColumnName))
-                                    {
-                                        currentDataSource = allDataSource[excelColumnAttribute.ColumnName];
-                                    }
-                                    else
-                                    {
-                                        Dictionary<string, string> dataSource = (Dictionary<string, string>)excelColumnAttribute.DataSource.ToObject(new Dictionary<string, string>());
-                                        allDataSource.Add(excelColumnAttribute.ColumnName, dataSource);
-                                        currentDataSource = dataSource;
-                                    }
-                                    #endregion
-
-                                    if (currentDataSource.ContainsKey(dtRow[excelColumnAttribute.ColumnName].ToString()))
-                                    {
-                                        propertySetMethod.Invoke(concreteObject, new object[] { currentDataSource[dtRow[excelColumnAttribute.ColumnName].ToString()] });
-                                        isCellValid = true;
-                                    }
-                                    else
-                                    {
-                                        isCellValid = false;
-                                    }
-                                    #endregion
-
-                                    break;
-                                default:
-                                    #region 无须校验
-                                    isCellValid = true;
-                                    propertySetMethod.Invoke(concreteObject, new object[] { Convert.ChangeType(dtRow[excelColumnAttribute.ColumnName], property.PropertyType) });
-                                    #endregion
-                                    break;
-                            }
-                            #endregion
 
                             #region 记录校验错误
                             if (!isCellValid)
                             {
-                                concreteObject.AppendError(excelColumnAttribute.ColumnName + excelColumnAttribute.ValidErrorMsg);
+                                concreteObject.AppendError(excelColumnAttribute.ColumnName + "");
                             }
                             #endregion
 
@@ -197,76 +133,47 @@ namespace SimpleUploadExcelHelper
                             isCellValid = true;
                             var cellVal = dtRow[excelColumnAttribute.ColumnName].ToString();
 
-                            #region 是否必填
-                            if (excelColumnAttribute.IsRequire)
+                            #region 校验Atrribute
+                            var validAttributes = property.GetCustomAttributes<ValidBaseAttribute>();
+
+                            foreach (var validAttribute in validAttributes)
                             {
-                                if (string.IsNullOrEmpty(cellVal))
+                                if (!validAttribute.Valid(cellVal))
+                                {//记录校验错误
+                                    isCellValid = false;
+                                    concreteObject.AppendError(excelColumnAttribute.ColumnName + "值" + cellVal + validAttribute.ErrorMsg);
+                                }
+                              
+                            }
+
+                            if (isCellValid)
+                            {
+                                propertySetMethod.Invoke(concreteObject, new object[] { Convert.ChangeType(cellVal, property.PropertyType) });
+                            }
+
+                            #endregion
+
+                            #region DataSourceAttribute
+                            var datasourceAttribute = property.GetCustomAttribute<DataSourceBaseAttribute>();
+                            var datasourceFieldAttribute= property.GetCustomAttribute<DataSourceFieldAttribute>();
+                            if (datasourceAttribute != null && datasourceFieldAttribute != null)
+                            {//两者必须成対的出现
+                                var dt = datasourceAttribute.GetDataSource();
+                                var keyFieldName = datasourceFieldAttribute.KeyFieldName;
+                                var valFieldName = datasourceFieldAttribute.ValueFieldName;
+
+                                var dr=dt.Select(keyFieldName + "='" + cellVal+"'");
+
+                                if (dr == null)
                                 {
-                                    concreteObject.AppendError("请输入" + excelColumnAttribute.ColumnName);
-                                    continue;
+                                    concreteObject.AppendError(excelColumnAttribute.ColumnName + "值" + cellVal + datasourceFieldAttribute.ErrorMsg);
+                                }
+                                else
+                                {
+                                    propertySetMethod.Invoke(concreteObject, new object[] { Convert.ChangeType(dr[0][valFieldName], property.PropertyType) });
                                 }
                             }
-                            #endregion
 
-                            #region 格式校验
-                            switch (excelColumnAttribute.ValidType)
-                            {
-                                case Common.ExcelFieldValidType.Regular:
-                                    #region 正则校验
-                                    if (excelColumnAttribute.ValidRegular.IsMatch(dtRow[excelColumnAttribute.ColumnName].ToString()))
-                                    {
-                                        propertySetMethod.Invoke(concreteObject, new object[] { Convert.ChangeType(dtRow[excelColumnAttribute.ColumnName], property.PropertyType) });
-                                        isCellValid = true;
-                                    }
-                                    else
-                                    {
-                                        isCellValid = false;
-                                    }
-                                    #endregion
-                                    break;
-                                case Common.ExcelFieldValidType.DataSource:
-                                    //todo:各种类型的数据源校验
-                                    #region 数据源校验 
-
-                                    #region 将json数据源反序列化为实体，反序列化过的数据源不再反序列化
-                                    if (allDataSource.ContainsKey(excelColumnAttribute.ColumnName))
-                                    {
-                                        currentDataSource = allDataSource[excelColumnAttribute.ColumnName];
-                                    }
-                                    else
-                                    {
-                                        Dictionary<string, string> dataSource = (Dictionary<string, string>)excelColumnAttribute.DataSource.ToObject(new Dictionary<string, string>());
-                                        allDataSource.Add(excelColumnAttribute.ColumnName, dataSource);
-                                        currentDataSource = dataSource;
-                                    }
-                                    #endregion
-
-                                    if (currentDataSource.ContainsKey(dtRow[excelColumnAttribute.ColumnName].ToString()))
-                                    {
-                                        propertySetMethod.Invoke(concreteObject, new object[] { currentDataSource[dtRow[excelColumnAttribute.ColumnName].ToString()] });
-                                        isCellValid = true;
-                                    }
-                                    else
-                                    {
-                                        isCellValid = false;
-                                    }
-                                    #endregion
-
-                                    break;
-                                default:
-                                    #region 无须校验
-                                    isCellValid = true;
-                                    propertySetMethod.Invoke(concreteObject, new object[] { Convert.ChangeType(dtRow[excelColumnAttribute.ColumnName], property.PropertyType) });
-                                    #endregion
-                                    break;
-                            }
-                            #endregion
-
-                            #region 记录校验错误
-                            if (!isCellValid)
-                            {
-                                concreteObject.AppendError(excelColumnAttribute.ColumnName + excelColumnAttribute.ValidErrorMsg);
-                            }
                             #endregion
 
 

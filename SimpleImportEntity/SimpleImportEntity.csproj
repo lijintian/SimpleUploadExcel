@@ -40,6 +40,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Demo\DataSource\CityDatasource.cs" />
+    <Compile Include="Demo\DataSource\GetDataSourceInstance.cs" />
     <Compile Include="Demo\TestDataSourceModel.cs" />
     <Compile Include="Demo\TestRegularValidModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -1,12 +1,16 @@
 .配置统一控制  √
 .helper提供保存操作，并返回文件信息 √
 .重构Attribute，要职责单一
+校验Attribute
 Require(必要字段)
 Int
-Default(default)
 Double(intLen,decimalLen)
 Decimal(intLen,decimalLen)
 Length(len)
 Range(from,to)
+Datetime
+
+赋值Attribute
+Default(default)
 DataSource(sourceType.getSourceHandler,ValueField)
 

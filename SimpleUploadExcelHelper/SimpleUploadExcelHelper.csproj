@@ -63,13 +63,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Attribute\DBTableAttribute.cs" />
-    <Compile Include="Attribute\DBTableColumnAttribute.cs" />
-    <Compile Include="Attribute\ExcelColumnAttribute.cs" />
-    <Compile Include="Attribute\BaseDataSource.cs" />
+    <Compile Include="Attribute\DataSourceAttribute\DataSourceFieldAttribute.cs" />
+    <Compile Include="Attribute\DiscriptionAttribute\DBTableAttribute.cs" />
+    <Compile Include="Attribute\DiscriptionAttribute\DBTableColumnAttribute.cs" />
+    <Compile Include="Attribute\DiscriptionAttribute\ExcelColumnAttribute.cs" />
     <Compile Include="Attribute\ExcelFieldValidType.cs" />
-    <Compile Include="Attribute\RequireAttribute.cs" />
-    <Compile Include="Attribute\ValidBaseAttribute.cs" />
+    <Compile Include="Attribute\DataSourceAttribute\DataSourceBaseAttribute.cs" />
+    <Compile Include="Attribute\ValidAttribute\RegularAttribute.cs" />
+    <Compile Include="Attribute\ValidAttribute\DecimalAttribute.cs" />
+    <Compile Include="Attribute\ValidAttribute\DateTimeAttribute.cs" />
+    <Compile Include="Attribute\ValidAttribute\LengthAttribute.cs" />
+    <Compile Include="Attribute\ValidAttribute\IntAttribute.cs" />
+    <Compile Include="Attribute\ValidAttribute\RequireAttribute.cs" />
+    <Compile Include="Attribute\ValidAttribute\ValidBaseAttribute.cs" />
     <Compile Include="Common\JsonHelper.cs" />
     <Compile Include="Common\ConfigHelper.cs" />
     <Compile Include="Common\TypeHelper.cs" />
