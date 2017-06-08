@@ -63,6 +63,11 @@ namespace SimpleUploadExcelHelper
 
         public static ExcelFileInfo GetFile(Type importType, List<EntityBase> errors) 
         {
+            if (errors.Count <= 0)
+            {
+                throw new Exception("SimpleUploadExcelHelper-Exception：错误实体个数等于0不能写错误文件");
+            }
+
             var fields = importType.GetFields();
             var properties = importType.GetProperties();
 

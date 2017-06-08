@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using SimpleUploadExcelHelper.Common;
 using SimpleUploadExcelHelper.Entities;
 using System.IO;
+using System.Data;
 
 namespace SimpleUploadExcelHelper
 {
@@ -104,8 +105,7 @@ namespace SimpleUploadExcelHelper
 
                 var isCellValid = true;
 
-                Dictionary<string, Dictionary<string, string>> allDataSource = new Dictionary<string, Dictionary<string, string>>();
-                Dictionary<string, string> currentDataSource = new Dictionary<string, string>();
+                Dictionary<string, DataTable> allDataSource = new Dictionary<string, DataTable>();
 
                 foreach (System.Data.DataRow dtRow in dtExcelData.Rows)
                 {
@@ -133,6 +133,44 @@ namespace SimpleUploadExcelHelper
                             isCellValid = true;
                             var cellVal = dtRow[excelColumnAttribute.ColumnName].ToString();
 
+                            #region DataSourceAttribute
+                            var datasourceAttribute = property.GetCustomAttribute<DataSourceBaseAttribute>();
+                            var datasourceFieldAttribute = property.GetCustomAttribute<DataSourceFieldAttribute>();
+                            if (datasourceAttribute != null && datasourceFieldAttribute != null)
+                            {//两者必须成対的出现
+                                var dt = new DataTable();
+
+                                #region 同类型的数据源拿过一次后确保不会重复拿
+                                var dataSourceTypeName = datasourceAttribute.GetType().Name;
+
+                                if (allDataSource.ContainsKey(dataSourceTypeName))
+                                {
+                                    dt = allDataSource[dataSourceTypeName];
+                                }
+                                else
+                                {
+                                    dt = datasourceAttribute.GetDataSource();
+                                    allDataSource.Add(dataSourceTypeName, dt);
+                                }
+                                #endregion
+
+                                var keyFieldName = datasourceFieldAttribute.KeyFieldName;
+                                var valFieldName = datasourceFieldAttribute.ValueFieldName;
+
+                                var dr = dt.Select(keyFieldName + "='" + cellVal + "'");
+
+                                if (dr == null)
+                                {
+                                    concreteObject.AppendError(excelColumnAttribute.ColumnName + "值" + cellVal + datasourceFieldAttribute.ErrorMsg);
+                                }
+                                else
+                                {
+                                    propertySetMethod.Invoke(concreteObject, new object[] { Convert.ChangeType(dr[0][valFieldName], property.PropertyType) });
+                                }
+                            }
+
+                            #endregion
+
                             #region 校验Atrribute
                             var validAttributes = property.GetCustomAttributes<ValidBaseAttribute>();
 
@@ -153,28 +191,7 @@ namespace SimpleUploadExcelHelper
 
                             #endregion
 
-                            #region DataSourceAttribute
-                            var datasourceAttribute = property.GetCustomAttribute<DataSourceBaseAttribute>();
-                            var datasourceFieldAttribute= property.GetCustomAttribute<DataSourceFieldAttribute>();
-                            if (datasourceAttribute != null && datasourceFieldAttribute != null)
-                            {//两者必须成対的出现
-                                var dt = datasourceAttribute.GetDataSource();
-                                var keyFieldName = datasourceFieldAttribute.KeyFieldName;
-                                var valFieldName = datasourceFieldAttribute.ValueFieldName;
-
-                                var dr=dt.Select(keyFieldName + "='" + cellVal+"'");
-
-                                if (dr == null)
-                                {
-                                    concreteObject.AppendError(excelColumnAttribute.ColumnName + "值" + cellVal + datasourceFieldAttribute.ErrorMsg);
-                                }
-                                else
-                                {
-                                    propertySetMethod.Invoke(concreteObject, new object[] { Convert.ChangeType(dr[0][valFieldName], property.PropertyType) });
-                                }
-                            }
-
-                            #endregion
+                         
 
 
                         }
