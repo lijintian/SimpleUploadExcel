@@ -53,5 +53,14 @@ namespace SimpleUploadExcelHelper
             var filePath = Path.Combine(uploadFileRoot.ToString(), importType.Name);
             return Path.Combine(filePath, fileName);
         }
+
+        public static string GetFilePathAndName(string EntityTypeName, string fileName)
+        {
+            var uploadFileRoot = ConfigHelper.GetConfig("SimpleImportExcel: UploadFileRoot");
+
+            var filePath = Path.Combine(uploadFileRoot.ToString(), EntityTypeName);
+            return Path.Combine(filePath, fileName);
+        }
+
     }
 }

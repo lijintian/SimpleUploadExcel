@@ -68,6 +68,8 @@
     <Compile Include="Attribute\ExcelColumnAttribute.cs" />
     <Compile Include="Attribute\BaseDataSource.cs" />
     <Compile Include="Attribute\ExcelFieldValidType.cs" />
+    <Compile Include="Attribute\RequireAttribute.cs" />
+    <Compile Include="Attribute\ValidBaseAttribute.cs" />
     <Compile Include="Common\JsonHelper.cs" />
     <Compile Include="Common\ConfigHelper.cs" />
     <Compile Include="Common\TypeHelper.cs" />

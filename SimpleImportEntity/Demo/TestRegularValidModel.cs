@@ -23,5 +23,16 @@ namespace SimpleImportEntity
 
         [ExcelColumn("Field4", true, ExcelFieldValidType.Letter)]
         public string Field4 { get; set; }
+
+
+        public override bool IsValid()
+        {
+            if (this.Field1 != "处理号")
+            {
+                base.AppendError("Field1只能输入处理号！");
+            }
+
+            return string.IsNullOrEmpty(base.ErrorDiscription);
+        }
     }
 }
