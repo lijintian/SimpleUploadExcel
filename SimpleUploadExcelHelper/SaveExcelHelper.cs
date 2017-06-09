@@ -11,6 +11,8 @@ namespace SimpleUploadExcelHelper
 {
     public class SaveExcelHelper
     {
+        private static string UploadFileRoot = ConfigHelper.GetConfig("SimpleImportExcel:UploadFileRoot");
+
         private Type EntityType { get; set; }
 
         public ExcelFileInfo ImportExcelInfo { get; private set; }
@@ -25,9 +27,7 @@ namespace SimpleUploadExcelHelper
         {
             var fileName = DateTime.Now.ToString("yyyMMddHHmmss") + this.ImportExcelInfo.FileName;
 
-            var uploadFileRootConfig = ConfigHelper.GetConfig("SimpleImportExcel:UploadFileRoot"); 
-
-            var filePath = Path.Combine(uploadFileRootConfig.ToString(), this.EntityType.Name);
+            var filePath = Path.Combine(UploadFileRoot.ToString(), this.EntityType.Name);
 
             if (!Directory.Exists(filePath))
             {
@@ -48,18 +48,22 @@ namespace SimpleUploadExcelHelper
 
         public static string GetFilePathAndName(Type importType, string fileName)
         {
-            var uploadFileRoot = ConfigHelper.GetConfig("SimpleImportExcel: UploadFileRoot");
-
-            var filePath = Path.Combine(uploadFileRoot.ToString(), importType.Name);
-            return Path.Combine(filePath, fileName);
+            return GetFilePathAndName(importType.Name, fileName);
         }
 
         public static string GetFilePathAndName(string EntityTypeName, string fileName)
         {
-            var uploadFileRoot = ConfigHelper.GetConfig("SimpleImportExcel: UploadFileRoot");
-
-            var filePath = Path.Combine(uploadFileRoot.ToString(), EntityTypeName);
+            var filePath = Path.Combine(UploadFileRoot, EntityTypeName);
             return Path.Combine(filePath, fileName);
+        }
+
+        public static ExcelFileInfo GetExcelFileInfo(string EntityTypeName, string fileName)
+        {
+            var filePath = Path.Combine(UploadFileRoot.ToString(), EntityTypeName);
+
+            var excelFileInfo = new ExcelFileInfo(filePath, fileName);
+
+            return excelFileInfo;
         }
 
     }

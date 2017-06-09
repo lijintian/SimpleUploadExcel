@@ -87,7 +87,7 @@ namespace SimpleUploadExcelWeb.Controllers
             #endregion
 
             #region 通过组件生成导入错误文件
-            var errorFileInfo = ErrorEntityToFileHelper.GetFile(saveFileInfo.EntityType, errorEntities);
+            var errorFileInfo = ErrorEntityToFileHelper.WriteFile(saveFileInfo.EntityType, errorEntities);
             #endregion
 
             return View("UploadResult", errorFileInfo);

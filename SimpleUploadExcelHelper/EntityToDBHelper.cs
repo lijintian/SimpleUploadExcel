@@ -14,7 +14,7 @@ namespace SimpleUploadExcelHelper
 {
     public static class EntityToDBHelper
     {
-        private static string DbConfig = "SimpleImportExcel:RepositoryDBConnStr";
+        private static string DbConfig = ConfigHelper.GetConfig("SimpleImportExcel:RepositoryDBConnStr");
 
         /// <summary>
         /// 用TQL插入实体，实体个数必须在1000以下
@@ -92,9 +92,7 @@ namespace SimpleUploadExcelHelper
 
             var effectRows = 0;
 
-            var imprtDB =  ConfigHelper.GetConfig("DbConfig");
-           
-            var connStr = System.Configuration.ConfigurationManager.ConnectionStrings[imprtDB.ToString()];
+            var connStr = System.Configuration.ConfigurationManager.ConnectionStrings[DbConfig.ToString()];
 
             if (connStr == null)
             {
@@ -128,61 +126,15 @@ namespace SimpleUploadExcelHelper
         {
             var importType = typeof(T);
             var fields = importType.GetFields();
-            var properties = importType.GetProperties();
 
-            var dbTableAttribute = importType.GetCustomAttribute<DBTableAttribute>(false);
-            if (dbTableAttribute == null)
-            {
-                throw new Exception("没有配置DBTableAttribute，无法识别实体要持久化到哪个数据库。");
-            }
+            var baseEntities = new List<EntityBase>();
 
-            #region 生成DataTable用于BulkCopy
-
-            #region 生成DataTable数据结构
-
-            var dt = new DataTable(dbTableAttribute.TableName);
-
-            foreach (var property in properties)
-            {
-                var dbColumnAttribute = property.GetCustomAttribute<DBTableColumnAttribute>(false);
-
-                if (dbColumnAttribute != null)
-                {
-                    dt.Columns.Add(dbColumnAttribute.ColumnName);
-                }
-            }
-
-            #endregion
-
-            #region 生成DataTable
             foreach (var entity in entities)
             {
-                var concreteObject = Activator.CreateInstance<T>();
-
-                var dr=dt.NewRow();
-
-                foreach (var property in properties)
-                {
-                    var dbColumnAttribute = property.GetCustomAttribute<DBTableColumnAttribute>(false);
-
-                    
-                    if (dbColumnAttribute != null)
-                    {
-                        var propertyVal = property.GetValue(entity);
-                        dr[dbColumnAttribute.ColumnName] = propertyVal;
-                    }
-                }
-
-                dt.Rows.Add(dr);
-
+                baseEntities.Add(entity);
             }
-            #endregion
 
-            #endregion
-
-            #region 用BulkCopy持久化
-            BatchInsert(dt);
-            #endregion
+            ImportEntitiesWidthBulkCopy(importType, baseEntities);
 
             return;
         }
@@ -259,10 +211,7 @@ namespace SimpleUploadExcelHelper
         #region Private
         private static void BatchInsert(DataTable dt)
         {
-         
-            var imprtDB = ConfigHelper.GetConfig(DbConfig);
-
-            var connStr = System.Configuration.ConfigurationManager.ConnectionStrings[imprtDB.ToString()];
+            var connStr = System.Configuration.ConfigurationManager.ConnectionStrings[DbConfig.ToString()];
 
             if (connStr == null)
             {
