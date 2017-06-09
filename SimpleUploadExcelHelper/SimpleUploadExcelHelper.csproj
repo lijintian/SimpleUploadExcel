@@ -67,7 +67,6 @@
     <Compile Include="Attribute\DiscriptionAttribute\DBTableAttribute.cs" />
     <Compile Include="Attribute\DiscriptionAttribute\DBTableColumnAttribute.cs" />
     <Compile Include="Attribute\DiscriptionAttribute\ExcelColumnAttribute.cs" />
-    <Compile Include="Attribute\ExcelFieldValidType.cs" />
     <Compile Include="Attribute\DataSourceAttribute\DataSourceBaseAttribute.cs" />
     <Compile Include="Attribute\ValidAttribute\RegularAttribute.cs" />
     <Compile Include="Attribute\ValidAttribute\DecimalAttribute.cs" />

@@ -16,77 +16,28 @@ namespace SimpleUploadExcelHelper
     {
         public static List<T> GetEntities<T>(ExcelFileInfo fileInfo, out List<T> errors) where T : Entities.EntityBase
         {
-            using (var npoiHelper = new NPOIExcelHelper(fileInfo.FilePathAndName))
+
+            var baseErrors = new List<EntityBase>();
+            var baseEntities = new List<EntityBase>();
+            var type = typeof(T);
+
+            baseEntities = GetEntities(type, fileInfo, out baseErrors);
+            errors = new List<T>();
+
+            foreach (var error in baseErrors)
             {
-
-                var dtExcelData = npoiHelper.ExcelToDataTable(string.Empty, fileInfo.ColumnNameRow);//展示只支持取第一个sheet
-
-                errors = new List<T>();
-
-                var entities = new List<T>();
-
-                var importType = typeof(T);
-                var fields = importType.GetFields();
-                var properties = importType.GetProperties();
-
-                var isCellValid = true;
-
-                Dictionary<string, Dictionary<string, string>> allDataSource = new Dictionary<string, Dictionary<string, string>>();
-                Dictionary<string, string> currentDataSource = new Dictionary<string, string>();
-
-                foreach (System.Data.DataRow dtRow in dtExcelData.Rows)
-                {
-                    var concreteObject = Activator.CreateInstance<T>();
-
-                    foreach (var property in properties)
-                    {
-                        var excelColumnAttribute = property.GetCustomAttribute<ExcelColumnAttribute>(false);
-
-                        #region 给原始导入属性赋值
-                        if (property.Name == "OriginalData")
-                        {
-                            var propertySetMethod = property.GetSetMethod();
-                            //BindingFlags flag = BindingFlags.Public | BindingFlags.Instance;
-                            propertySetMethod.Invoke(concreteObject, new object[] { dtRow });
-
-                        }
-                        #endregion
-
-                        #region 根据Attribute校验Excel的原始导入值是否校验通过，校验不通过则加到错误实体，通过则加到正确实体
-                        if (excelColumnAttribute != null)
-                        {
-                            var propertySetMethod = property.GetSetMethod();
-                            //BindingFlags flag = BindingFlags.Public | BindingFlags.Instance;
-                            isCellValid = true;
-                            var cellVal = dtRow[excelColumnAttribute.ColumnName].ToString();
-
-
-                            #region 记录校验错误
-                            if (!isCellValid)
-                            {
-                                concreteObject.AppendError(excelColumnAttribute.ColumnName + "");
-                            }
-                            #endregion
-
-
-                        }
-                        #endregion
-                    }
-
-                    #region 校验不通过则加到错误实体，通过则加到正确实体
-                    if (concreteObject.IsValid())
-                    {
-                        entities.Add(concreteObject);
-                    }
-                    else
-                    {
-                        errors.Add(concreteObject);
-                    }
-                    #endregion
-                }
-
-                return entities;
+                errors.Add((T)error);
             }
+
+            var entities = new List<T>();
+
+            foreach (var entity in baseEntities)
+            {
+                entities.Add((T)entity);
+            }
+
+            return entities;
+
         }
 
         public static List<EntityBase> GetEntities(Type importType,ExcelFileInfo fileInfo, out List<EntityBase> errors)
@@ -133,6 +84,26 @@ namespace SimpleUploadExcelHelper
                             isCellValid = true;
                             var cellVal = dtRow[excelColumnAttribute.ColumnName].ToString();
 
+                            #region 校验Atrribute
+                            var validAttributes = property.GetCustomAttributes<ValidBaseAttribute>();
+
+                            foreach (var validAttribute in validAttributes)
+                            {
+                                if (!validAttribute.Valid(cellVal))
+                                {//记录校验错误
+                                    isCellValid = false;
+                                    concreteObject.AppendError(excelColumnAttribute.ColumnName + "值" + cellVal + validAttribute.ErrorMsg);
+                                }
+                              
+                            }
+
+                            if (isCellValid)
+                            {
+                                propertySetMethod.Invoke(concreteObject, new object[] { Convert.ChangeType(cellVal, property.PropertyType) });
+                            }
+
+                            #endregion
+
                             #region DataSourceAttribute
                             var datasourceAttribute = property.GetCustomAttribute<DataSourceBaseAttribute>();
                             var datasourceFieldAttribute = property.GetCustomAttribute<DataSourceFieldAttribute>();
@@ -171,29 +142,6 @@ namespace SimpleUploadExcelHelper
 
                             #endregion
 
-                            #region 校验Atrribute
-                            var validAttributes = property.GetCustomAttributes<ValidBaseAttribute>();
-
-                            foreach (var validAttribute in validAttributes)
-                            {
-                                if (!validAttribute.Valid(cellVal))
-                                {//记录校验错误
-                                    isCellValid = false;
-                                    concreteObject.AppendError(excelColumnAttribute.ColumnName + "值" + cellVal + validAttribute.ErrorMsg);
-                                }
-                              
-                            }
-
-                            if (isCellValid)
-                            {
-                                propertySetMethod.Invoke(concreteObject, new object[] { Convert.ChangeType(cellVal, property.PropertyType) });
-                            }
-
-                            #endregion
-
-                         
-
-
                         }
                         #endregion
                     }
@@ -213,5 +161,7 @@ namespace SimpleUploadExcelHelper
                 return entities;
             }
         }
+
+        
     }
 }
