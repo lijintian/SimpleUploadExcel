@@ -20,8 +20,12 @@ namespace SimpleUploadExcelHelper
         /// 必须与继承DataSourceBaseAttribute的Attribute同时出现
         /// </summary>
         /// <param name="dataSourceField">数据源字段</param>
-        public DataSourceFieldAttribute(string keyFieldName,string valueFieldName,string errorMsg)
+        public DataSourceFieldAttribute(string keyFieldName,string valueFieldName,string errorMsg="")
         {
+            if (string.IsNullOrEmpty(errorMsg))
+            {
+                errorMsg = "在数据源无法找到";
+            }
             this.KeyFieldName = keyFieldName;
             this.ValueFieldName = valueFieldName;
             this.ErrorMsg = errorMsg;

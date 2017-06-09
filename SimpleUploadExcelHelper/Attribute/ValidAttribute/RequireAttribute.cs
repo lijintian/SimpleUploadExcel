@@ -8,8 +8,12 @@ namespace SimpleUploadExcelHelper
 {
     public class RequireAttribute:ValidBaseAttribute
     {
-        public RequireAttribute(string errorMsgFormat)
+        public RequireAttribute(string errorMsgFormat="")
         {
+            if (string.IsNullOrEmpty(errorMsgFormat))
+            {
+                errorMsgFormat = "为必填字段";
+            }
             base.ErrorMsgFormat = errorMsgFormat;
         }
 

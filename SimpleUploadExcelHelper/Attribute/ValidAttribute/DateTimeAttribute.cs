@@ -8,8 +8,12 @@ namespace SimpleUploadExcelHelper
 {
     public class DateTimeAttribute : ValidBaseAttribute
     {
-        public DateTimeAttribute(string errorMsgFormat)
+        public DateTimeAttribute(string errorMsgFormat="")
         {
+            if (string.IsNullOrEmpty(errorMsgFormat))
+            {
+                errorMsgFormat = "请填写正确的日期格式";
+            }
             base.ErrorMsgFormat = errorMsgFormat;
         }
 

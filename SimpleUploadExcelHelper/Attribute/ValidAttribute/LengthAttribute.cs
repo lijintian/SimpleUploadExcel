@@ -12,16 +12,25 @@ namespace SimpleUploadExcelHelper
 
         public int MaxLen { get; set; }
 
-        public LengthAttribute(int maxLen, string errorMsgFormat)
+        public LengthAttribute(int maxLen, string errorMsgFormat="")
         {
             this.MaxLen = maxLen;
+
+            if (string.IsNullOrEmpty(errorMsgFormat))
+            {
+                errorMsgFormat = "长度不能超过"+maxLen;
+            }
             base.ErrorMsgFormat = errorMsgFormat;
         }
 
-        public LengthAttribute(int minLen,int maxLen, string errorMsgFormat)
+        public LengthAttribute(int minLen,int maxLen, string errorMsgFormat="")
         {
             this.MinLen = minLen;
             this.MaxLen = maxLen;
+            if (string.IsNullOrEmpty(errorMsgFormat))
+            {
+                errorMsgFormat = "长度范围为" + minLen+"-"+maxLen;
+            }
             base.ErrorMsgFormat = errorMsgFormat;
         }
 

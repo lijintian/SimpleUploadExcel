@@ -84,30 +84,14 @@ namespace SimpleUploadExcelHelper
                             isCellValid = true;
                             var cellVal = dtRow[excelColumnAttribute.ColumnName].ToString();
 
-                            #region 校验Atrribute
-                            var validAttributes = property.GetCustomAttributes<ValidBaseAttribute>();
-
-                            foreach (var validAttribute in validAttributes)
-                            {
-                                if (!validAttribute.Valid(cellVal))
-                                {//记录校验错误
-                                    isCellValid = false;
-                                    concreteObject.AppendError(excelColumnAttribute.ColumnName + "值" + cellVal + validAttribute.ErrorMsg);
-                                }
-                              
-                            }
-
-                            if (isCellValid)
-                            {
-                                propertySetMethod.Invoke(concreteObject, new object[] { Convert.ChangeType(cellVal, property.PropertyType) });
-                            }
-
-                            #endregion
-
                             #region DataSourceAttribute
+
                             var datasourceAttribute = property.GetCustomAttribute<DataSourceBaseAttribute>();
                             var datasourceFieldAttribute = property.GetCustomAttribute<DataSourceFieldAttribute>();
-                            if (datasourceAttribute != null && datasourceFieldAttribute != null)
+
+                            var isDatasource = datasourceAttribute != null && datasourceFieldAttribute != null;
+
+                            if (isDatasource)
                             {//两者必须成対的出现
                                 var dt = new DataTable();
 
@@ -136,8 +120,39 @@ namespace SimpleUploadExcelHelper
                                 }
                                 else
                                 {
-                                    propertySetMethod.Invoke(concreteObject, new object[] { Convert.ChangeType(dr[0][valFieldName], property.PropertyType) });
+                                    var propertyType = property.PropertyType;
+
+                                    if (propertyType.IsEnum)
+                                    {
+                                        propertySetMethod.Invoke(concreteObject, new object[] { Enum.Parse(propertyType, dr[0][valFieldName].ToString()) });
+                                    }
+                                    else
+                                    {
+                                        propertySetMethod.Invoke(concreteObject, new object[] { Convert.ChangeType(dr[0][valFieldName], propertyType) });
+                                    }
+
+                                    
                                 }
+                            }
+
+                            #endregion
+
+                            #region 校验Atrribute
+                            var validAttributes = property.GetCustomAttributes<ValidBaseAttribute>();
+
+                            foreach (var validAttribute in validAttributes)
+                            {
+                                if (!validAttribute.Valid(cellVal))
+                                {//记录校验错误
+                                    isCellValid = false;
+                                    concreteObject.AppendError(excelColumnAttribute.ColumnName + "值" + cellVal + validAttribute.ErrorMsg);
+                                }
+
+                            }
+
+                            if (isCellValid && !isDatasource)
+                            {
+                                propertySetMethod.Invoke(concreteObject, new object[] { Convert.ChangeType(cellVal, property.PropertyType) });
                             }
 
                             #endregion

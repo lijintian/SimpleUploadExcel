@@ -19,8 +19,12 @@ namespace SimpleUploadExcelHelper
         /// <param name="intLen">整数长度</param>
         /// <param name="decLen">小数长度</param>
         /// <param name="errorMsgFormat"></param>
-        public DecimalAttribute(int intLen,int decLen, string errorMsgFormat)
+        public DecimalAttribute(int intLen,int decLen, string errorMsgFormat="")
         {
+            if (string.IsNullOrEmpty(errorMsgFormat))
+            {
+                errorMsgFormat = "请填写" + intLen + "位内整数" + decLen + "位内小数";
+            }
             base.ErrorMsgFormat = errorMsgFormat;
         }
 

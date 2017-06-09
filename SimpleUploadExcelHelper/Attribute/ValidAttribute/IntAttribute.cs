@@ -8,9 +8,13 @@ namespace SimpleUploadExcelHelper
 {
     public class IntAttribute:ValidBaseAttribute
     {
-        public IntAttribute(string errorMsgFormat)
+        public IntAttribute(string errorMsgFormat="")
         {
-            base.ErrorMsgFormat = errorMsgFormat;
+            if (string.IsNullOrEmpty(errorMsgFormat))
+            {
+                errorMsgFormat = "请填写整数";
+            }
+            base.ErrorMsgFormat = errorMsgFormat; 
         }
 
         public override bool Valid(string val)

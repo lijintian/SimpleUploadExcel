@@ -11,9 +11,13 @@ namespace SimpleUploadExcelHelper
     {
         public string RegExpress { get; set; }
 
-        public RegularAttribute(string regExpress, string errorMsgFormat)
+        public RegularAttribute(string regExpress, string errorMsgFormat="")
         {
             this.RegExpress = regExpress;
+            if (string.IsNullOrEmpty(errorMsgFormat))
+            {
+                errorMsgFormat = "必须符合正则表达式" + regExpress;
+            }
             base.ErrorMsgFormat = errorMsgFormat;
         }
 
