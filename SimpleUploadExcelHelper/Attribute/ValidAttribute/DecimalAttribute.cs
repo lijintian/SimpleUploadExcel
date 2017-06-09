@@ -25,6 +25,8 @@ namespace SimpleUploadExcelHelper
             {
                 errorMsgFormat = "请填写" + intLen + "位内整数" + decLen + "位内小数";
             }
+            this.IntLen = intLen;
+            this.DecLen = decLen;
             base.ErrorMsgFormat = errorMsgFormat;
         }
 

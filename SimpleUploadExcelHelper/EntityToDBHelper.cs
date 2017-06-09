@@ -185,11 +185,19 @@ namespace SimpleUploadExcelHelper
                 {
                     var dbColumnAttribute = property.GetCustomAttribute<DBTableColumnAttribute>(false);
 
-
                     if (dbColumnAttribute != null)
                     {
                         var propertyVal = property.GetValue(entity);
-                        dr[dbColumnAttribute.ColumnName] = propertyVal;
+                        var propertyType = property.PropertyType;
+
+                        if (propertyType.IsEnum)
+                        {
+                            dr[dbColumnAttribute.ColumnName] = (int)Enum.Parse(propertyType, propertyVal.ToString());
+                        }
+                        else
+                        {
+                            dr[dbColumnAttribute.ColumnName] = propertyVal;
+                        }
                     }
                 }
 
