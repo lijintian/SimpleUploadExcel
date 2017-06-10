@@ -1,3 +1,2 @@
-区分不同数据源Attribute
-Datatable，KeyValue，T
+1、支持事件拓展，允许用户实现事件来对所有实体进行统一处理
 

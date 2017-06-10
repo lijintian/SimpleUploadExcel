@@ -9,6 +9,9 @@ using SimpleUploadExcelHelper.Common;
 using SimpleUploadExcelHelper.Entities;
 using System.IO;
 using System.Data;
+using Microsoft.Practices.Unity;
+using Microsoft.Practices.Unity.Configuration;
+using System.Configuration;
 
 namespace SimpleUploadExcelHelper
 {
@@ -177,6 +180,16 @@ namespace SimpleUploadExcelHelper
             }
         }
 
-        
+        public List<EntityBase> ReolveAndDoHandler(Type importType)
+        {
+            IUnityContainer myContainer = new UnityContainer();
+            myContainer.LoadConfiguration("containerOne ");
+
+            UnityConfigurationSection section= (UnityConfigurationSection)ConfigurationManager.GetSection("unity");
+            section.Configure(myContainer, "containerOne");
+
+            return new List<EntityBase>();
+        }
+
     }
 }
