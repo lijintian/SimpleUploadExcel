@@ -12,7 +12,7 @@ using SimpleImportEntity.Demo.DataSource;
 namespace SimpleImportEntity
 {
     [DBTable("TestBatchImportTable")]
-    public class TestDataSourceModel : EntityBase
+    public class DemoEntity : EntityBase
     {
         [ExcelColumn("城市")]
         [DBTableColumn("City")]

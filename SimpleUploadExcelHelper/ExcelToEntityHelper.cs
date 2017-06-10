@@ -12,6 +12,7 @@ using System.Data;
 using Microsoft.Practices.Unity;
 using Microsoft.Practices.Unity.Configuration;
 using System.Configuration;
+using SimpleUploadExcelHelper.Event;
 
 namespace SimpleUploadExcelHelper
 {
@@ -187,6 +188,8 @@ namespace SimpleUploadExcelHelper
 
             UnityConfigurationSection section= (UnityConfigurationSection)ConfigurationManager.GetSection("unity");
             section.Configure(myContainer, "containerOne");
+
+            myContainer.Resolve<IEventHandler<EntityBase>>();
 
             return new List<EntityBase>();
         }

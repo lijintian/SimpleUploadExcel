@@ -42,8 +42,8 @@
   <ItemGroup>
     <Compile Include="Demo\DataSource\CityDatasource.cs" />
     <Compile Include="Demo\DataSource\GetDataSourceInstance.cs" />
-    <Compile Include="Demo\TestDataSourceModel.cs" />
-    <Compile Include="Demo\TestRegularValidModel.cs" />
+    <Compile Include="Demo\EventHandler\DemoEventHandler.cs" />
+    <Compile Include="Demo\DemoEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
