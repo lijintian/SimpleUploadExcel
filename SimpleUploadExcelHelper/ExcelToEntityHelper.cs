@@ -116,27 +116,30 @@ namespace SimpleUploadExcelHelper
                                 var keyFieldName = datasourceFieldAttribute.KeyFieldName;
                                 var valFieldName = datasourceFieldAttribute.ValueFieldName;
 
-                                var dr = dt.Select(keyFieldName + "='" + cellVal + "'");
-
-                                if (dr == null)
+                                
+                                if(!string.IsNullOrEmpty(cellVal))
                                 {
-                                    concreteObject.AppendError(excelColumnAttribute.ColumnName + "值" + cellVal + datasourceFieldAttribute.ErrorMsg);
-                                }
-                                else
-                                {
-                                    var propertyType = property.PropertyType;
+                                    var dr = dt.Select(keyFieldName + "='" + cellVal + "'");
 
-                                    if (propertyType.IsEnum)
+                                    if (!dr.Any())
                                     {
-                                        propertySetMethod.Invoke(concreteObject, new object[] { Enum.Parse(propertyType, dr[0][valFieldName].ToString()) });
+                                        concreteObject.AppendError(excelColumnAttribute.ColumnName + "值" + cellVal + datasourceFieldAttribute.ErrorMsg);
                                     }
                                     else
                                     {
-                                        propertySetMethod.Invoke(concreteObject, new object[] { Convert.ChangeType(dr[0][valFieldName], propertyType) });
-                                    }
+                                        var propertyType = property.PropertyType;
 
-                                    
+                                        if (propertyType.IsEnum)
+                                        {
+                                            propertySetMethod.Invoke(concreteObject, new object[] { Enum.Parse(propertyType, dr[0][valFieldName].ToString()) });
+                                        }
+                                        else
+                                        {
+                                            propertySetMethod.Invoke(concreteObject, new object[] { Convert.ChangeType(dr[0][valFieldName], propertyType) });
+                                        }
+                                    }
                                 }
+                                
                             }
 
                             #endregion
