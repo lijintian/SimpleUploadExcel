@@ -51,6 +51,12 @@ namespace SimpleUploadExcelHelper
 
                 var dtExcelData = npoiHelper.ExcelToDataTable(string.Empty, fileInfo.ColumnNameRow);//展示只支持取第一个sheet
 
+
+                if (dtExcelData.Rows.Count <= 0)
+                {
+                    throw new Exception("SimpleUploadExcelHelper-Exception:Excel中没有填写数据");
+                }
+
                 errors = new List<EntityBase>();
 
                 var entities = new List<EntityBase>();

@@ -242,6 +242,9 @@ namespace SimpleUploadExcelHelper
 
                         //最后一列的标号
                         int rowCount = sheet.LastRowNum;
+
+                        var isEmptyRow = true;
+
                         for (int i = startRow; i <= rowCount; ++i)
                         {
                             IRow row = sheet.GetRow(i);
@@ -250,12 +253,20 @@ namespace SimpleUploadExcelHelper
                             DataRow dataRow = data.NewRow();
                             for (int j = row.FirstCellNum; j < cellCount; ++j)
                             {
-                                if (row.GetCell(j) != null) //同理，没有数据的单元格都默认是null
+                                if (row.GetCell(j) != null && !string.IsNullOrEmpty(row.GetCell(j).ToString().Trim())) //同理，没有数据的单元格都默认是null
+                                {
+                                    isEmptyRow = false;
                                     dataRow[j] = row.GetCell(j).ToString();
+                                }
                             }
 
-                            dataRow["原始行号"] = i + 1.ToString();
-                            data.Rows.Add(dataRow);
+                            dataRow["原始行号"] = (i + 1).ToString();
+
+                            if (!isEmptyRow)
+                            {
+                                data.Rows.Add(dataRow);
+                            }
+
                         }
                     }
                     else
