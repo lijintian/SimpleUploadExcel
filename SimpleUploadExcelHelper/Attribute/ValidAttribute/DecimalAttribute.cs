@@ -38,10 +38,10 @@ namespace SimpleUploadExcelHelper
 
             if (decimal.TryParse(val, out decVal))
             {
-                var reg = new Regex("^[0-9]{0,"+this.IntLen+"}$");
+                var reg = new Regex("^[+-]?[0-9]{0,"+this.IntLen+"}$");
                 if (val.Contains("."))
                 {
-                    reg= new Regex("^[0-9]{0," + this.IntLen + "}.[0-9]{0," + this.DecLen + "}$");
+                    reg= new Regex("^[+-]?[0-9]{0," + this.IntLen + "}.[0-9]{0," + this.DecLen + "}$");
                 }
 
                 if (reg.IsMatch(val))
