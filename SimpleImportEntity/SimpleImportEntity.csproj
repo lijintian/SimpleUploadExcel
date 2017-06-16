@@ -42,7 +42,7 @@
   <ItemGroup>
     <Compile Include="Demo\DataSource\CityDatasource.cs" />
     <Compile Include="Demo\DataSource\GetDataSourceInstance.cs" />
-    <Compile Include="Demo\EventHandler\DemoEventHandler.cs" />
+    <Compile Include="Demo\Handler\DemoEventHandler.cs" />
     <Compile Include="Demo\DemoEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -52,6 +52,7 @@
       <Name>SimpleUploadExcelHelper</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

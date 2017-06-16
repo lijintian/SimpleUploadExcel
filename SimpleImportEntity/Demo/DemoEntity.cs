@@ -9,8 +9,10 @@ using SimpleUploadExcelHelper.Entities;
 using SimpleUploadExcelHelper;
 using SimpleImportEntity.Demo.DataSource;
 
+
 namespace SimpleImportEntity
 {
+    [EntitiesHandler("DemoEntitiesHandler")]
     [DBTable("TestBatchImportTable")]
     public class DemoEntity : EntityBase
     {

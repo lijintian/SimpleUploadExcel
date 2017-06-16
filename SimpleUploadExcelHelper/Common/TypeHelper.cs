@@ -23,5 +23,21 @@ namespace SimpleUploadExcelHelper.Common
 
             return entityType;
         }
+
+        public static Type GetHandlerType(string HandlerTypeName)
+        {
+            var entityAssemblyConfig = ConfigHelper.GetConfig("SimpleImportExcel:EntityHandlerAssemblyName");
+            var uploadHelperAssembly = System.Reflection.Assembly.Load(entityAssemblyConfig.ToString());
+            var entityAssemblyNameSpaceConfig = ConfigHelper.GetConfig("SimpleImportExcel:EntityHandlerNameSpace");
+
+            var entityType = uploadHelperAssembly.GetType(entityAssemblyNameSpaceConfig.ToString() + "." + HandlerTypeName);
+
+            if (entityType == null)
+            {
+                throw new Exception("SimpleUploadExcel-Exception：无法找到导入类型Handler" + HandlerTypeName);
+            }
+
+            return entityType;
+        }
     }
 }

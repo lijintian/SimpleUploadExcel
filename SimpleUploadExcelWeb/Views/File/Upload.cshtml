@@ -9,7 +9,7 @@
 <form action="~/File/SubmitUpload" enctype="multipart/form-data" method="post" >
     <a href="~/UploadFileTemplate/@Model.FileName">下载导入模版(@Model.FileName)</a>
     <input type="file" name="SubmitFile" />  
-    <input type="hidden" name="EntityClassName" value="TestDataSourceModel" />
+    <input type="hidden" name="EntityClassName" value="@Model.EntityClassName" />
     <input type="submit" /> 
 </form>
 

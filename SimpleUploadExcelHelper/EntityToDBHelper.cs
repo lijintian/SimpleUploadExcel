@@ -230,10 +230,9 @@ namespace SimpleUploadExcelHelper
 
             using (var sqlConn = new SqlConnection(connStr.ConnectionString))
             {
-                SqlTransaction tran;
+                sqlConn.Open();
 
-                tran = sqlConn.BeginTransaction();
-
+                SqlTransaction tran = sqlConn.BeginTransaction();
                 try
                 {
                     using (SqlBulkCopy bulkCopy = new SqlBulkCopy(sqlConn,SqlBulkCopyOptions.KeepIdentity,tran))
@@ -257,10 +256,12 @@ namespace SimpleUploadExcelHelper
                     }
 
                     tran.Commit();
+                    sqlConn.Close();
                 }
                 catch (Exception ex)
                 {
                     tran.Rollback();
+                    sqlConn.Close();
                     throw ex;
                 }
                

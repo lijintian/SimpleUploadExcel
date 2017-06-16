@@ -12,7 +12,7 @@ using System.Data;
 using Microsoft.Practices.Unity;
 using Microsoft.Practices.Unity.Configuration;
 using System.Configuration;
-using SimpleUploadExcelHelper.Event;
+using SimpleUploadExcelHelper.Handler;
 
 namespace SimpleUploadExcelHelper
 {
@@ -59,6 +59,7 @@ namespace SimpleUploadExcelHelper
 
                 errors = new List<EntityBase>();
 
+                var allEntities = new List<EntityBase>();
                 var entities = new List<EntityBase>();
 
                 var fields = importType.GetFields();
@@ -174,33 +175,50 @@ namespace SimpleUploadExcelHelper
                         #endregion
                     }
 
+                    allEntities.Add(concreteObject);
+
+                  
+                }
+
+                #region 如果有用户自定义所有实体处理
+                var handlerType = importType.GetCustomAttribute<EntitiesHandlerAttribute>();
+                if (handlerType != null)
+                {
+                    allEntities = ReolveAndDoHandler(handlerType.HandlerName,  allEntities);
+                }
+
+                #endregion
+
+                #region 区分校验正确与错误的实体
+                foreach (var entity in allEntities)
+                {
                     #region 校验不通过则加到错误实体，通过则加到正确实体
-                    if (concreteObject.IsValid())
+                    if (entity.IsValid())
                     {
-                        entities.Add(concreteObject);
+                        entities.Add(entity);
                     }
                     else
                     {
-                        errors.Add(concreteObject);
+                        errors.Add(entity);
                     }
                     #endregion
                 }
+
+                #endregion
 
                 return entities;
             }
         }
 
-        public List<EntityBase> ReolveAndDoHandler(Type importType)
+        public static List<EntityBase> ReolveAndDoHandler(string handlerTypeName,List<EntityBase> entities)
         {
-            IUnityContainer myContainer = new UnityContainer();
-            myContainer.LoadConfiguration("containerOne ");
+            var handlerType = TypeHelper.GetHandlerType(handlerTypeName);
 
-            UnityConfigurationSection section= (UnityConfigurationSection)ConfigurationManager.GetSection("unity");
-            section.Configure(myContainer, "containerOne");
+            var concreteObject = (IEntitiesHandler)Activator.CreateInstance(handlerType);
 
-            myContainer.Resolve<IEventHandler<EntityBase>>();
+            concreteObject.Handle(entities);
 
-            return new List<EntityBase>();
+            return entities;
         }
 
     }
