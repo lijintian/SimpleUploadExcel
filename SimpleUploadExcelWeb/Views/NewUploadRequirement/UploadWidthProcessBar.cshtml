@@ -1,0 +1,6 @@
+﻿@using SimpleUploadExcelHelper
+@{
+    Layout = null;
+}
+
+@{Html.RenderAction("UploadWidthProcessBar", "File", new { TemplateFileName = "Demo-Template.xlsx", EntityClassName = "DemoEntity" });}

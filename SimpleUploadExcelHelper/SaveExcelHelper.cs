@@ -63,6 +63,9 @@ namespace SimpleUploadExcelHelper
 
             var excelFileInfo = new ExcelFileInfo(filePath, fileName);
 
+            var type = TypeHelper.GetType(EntityTypeName);
+            excelFileInfo.EntityType = type;
+
             return excelFileInfo;
         }
 

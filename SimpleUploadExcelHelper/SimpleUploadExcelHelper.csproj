@@ -92,6 +92,7 @@
     <Compile Include="Attribute\ValidAttribute\IntAttribute.cs" />
     <Compile Include="Attribute\ValidAttribute\RequireAttribute.cs" />
     <Compile Include="Attribute\ValidAttribute\ValidBaseAttribute.cs" />
+    <Compile Include="Common\BatchProcessUtility.cs" />
     <Compile Include="Common\JsonHelper.cs" />
     <Compile Include="Common\ConfigHelper.cs" />
     <Compile Include="Common\TypeHelper.cs" />

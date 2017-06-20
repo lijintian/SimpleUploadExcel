@@ -1,0 +1,26 @@
+﻿@{
+    Layout = null;
+}
+
+<div id="divProcess" style="display:none; width:100%; position:fixed;top:0;left:0; z-index:888888;">
+    <div id="divShield" style=" width:100%;  position:fixed;top:0;left:0; z-index:888888;background: #000;opacity: 0.25;filter: alpha(opacity=25)">
+
+    </div>
+
+    <div id="divProcessContent" style="display:none; position:absolute; width:360px; top:50%; left:50%;margin-left:-180px;z-index:999999;">
+
+        @*<div id="divProcessBar" style="width:320px; display:inline-block">
+        <div class="progress" data-percent="0%">
+            <div class="bar" style="width: 0%;">
+            </div>
+        </div>
+    </div>
+    <img src="@Url.Content("~/Content/Images/loading.gif")" style="vertical-align: top; padding-top: 2px;" />*@
+
+        <div style="margin-top:-20px; color:blue;" class="text-center"><span id="processPersent"></span> 预计还需要:<span id="processNeedTime"></span></div>
+    </div>
+</div>
+
+<iframe id="processFrame" style="display:none"></iframe>
+
+

@@ -8,5 +8,9 @@
 <h2>
     上传成功
 </h2>
-<a target="_blank" href="~/File/ImportError?EntityClassName=@Model.EntityClassName&FileName=@Model.FileName" >下载错误文件（@Model.FileName）</a>
+@if (!string.IsNullOrEmpty(Model.FileName))
+{
+    <a target="_blank" href="~/File/ImportError?EntityClassName=@Model.EntityClassName&FileName=@Model.FileName">下载错误文件（@Model.FileName）</a>
+}
+
 

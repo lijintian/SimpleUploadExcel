@@ -19,5 +19,11 @@ namespace SimpleUploadExcelWeb.Controllers
         {
             return View();
         }
+
+        public ActionResult UploadWidthProcessBar()
+        {
+            return View();
+        }
+        
     }
 }

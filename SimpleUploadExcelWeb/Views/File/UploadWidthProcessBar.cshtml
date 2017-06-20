@@ -1,0 +1,17 @@
+﻿@using SimpleUploadExcelHelper
+@model ExcelFileInfo
+@{
+    ViewBag.Title = "Upload";
+}
+
+<script src="~/Scripts/File/SimpleUplaodExcel.js"></script>
+<h2>Upload</h2>
+<form id="formSimpleUpload"  enctype="multipart/form-data" method="post" >
+    <a href="~/UploadFileTemplate/@Model.FileName">下载导入模版(@Model.FileName)</a>
+    <input type="file" name="SubmitFile" />  
+    <input type="hidden" id="hfEntityClassName" name="EntityClassName" value="@Model.EntityClassName" />
+    <input  type="button" onclick="fSaveFile()" value="提交"/> 
+    @{ Html.RenderPartial("ProcessBar");}
+</form>
+
+

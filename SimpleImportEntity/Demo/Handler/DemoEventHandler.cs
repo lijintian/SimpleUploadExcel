@@ -15,9 +15,6 @@ namespace SimpleImportEntity.Handler
             foreach (var entity in entities)
             {
                 var demoEntity = (DemoEntity)entity;
-
-                demoEntity.Field2 = "测试Handler";
-                demoEntity.AppendError("测试Handler");
             }
         }
     }

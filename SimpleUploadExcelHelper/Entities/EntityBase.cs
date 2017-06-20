@@ -13,7 +13,7 @@ namespace SimpleUploadExcelHelper.Entities
 
         public string ExcelRowNo { get; set; }
 
-        public string ErrorDiscription { get; set; }
+        public string ErrorDiscription { get; private set; }
 
         public virtual bool IsValid() {
             return string.IsNullOrEmpty(this.ErrorDiscription);
